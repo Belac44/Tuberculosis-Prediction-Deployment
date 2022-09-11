@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, IntegerField, FileField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, regexp
+import re
 
 class PatientDetails(FlaskForm):
     name = StringField("Patient's Name:", validators=[DataRequired()])
@@ -11,5 +12,9 @@ class PatientDetails(FlaskForm):
     submit = SubmitField("Next")
 
 class ImageUpload(FlaskForm):
-    image = FileField("Choose Image", validators=[DataRequired()])
+    image = FileField(u"Choose Image", [regexp(r'^[^/\\]\.jpg$'), DataRequired()])
     upload = SubmitField("Upload")
+
+    def validate_image(FlaskForm, field):
+        if field.data:
+            field.data = re.sub(r'[^a-z0-9_.-]', '_', field.data)
