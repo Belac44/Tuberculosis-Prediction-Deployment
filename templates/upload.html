@@ -1,0 +1,7 @@
+{% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+<form class="container" method="post" action="{{url_for('predict')}}">
+  {{wtf.quick_form(form, novalidate=True, button_map={"upload":"primary"})}}
+</form>
+
+{% include "footer.html" %}
