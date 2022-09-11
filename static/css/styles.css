@@ -1,7 +1,10 @@
-body {
-
-}
-
-.container{
+.container {
 width:80%
+margin:0 auto;
+}
+.image-container{
+width:80%
+}
+img {
+width:100%
 }

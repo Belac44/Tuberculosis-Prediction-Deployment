@@ -1,19 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+from flask_uploads import IMAGES, UploadSet, configure_uploads
 from forms import PatientDetails, ImageUpload
 from flask_bootstrap import Bootstrap
 import os
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+photos = UploadSet("photos", IMAGES)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "AJ3IANWIDBGSU82HHTEV15SC534S"
-Bootstrap(app)
-app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'uploads')
-
-photos = UploadSet('photos', IMAGES)
+app.config["UPLOADED_PHOTOS_DEST"] = "static/img"
+app.config["SECRET_KEY"] = os.urandom(24)
 configure_uploads(app, photos)
-patch_request_class(app)
+Bootstrap(app)
+
 
 @app.route("/", methods=["GET", "POST"])
 def get_data():
@@ -32,19 +30,16 @@ def get_data():
 @app.route("/image", methods=["GET", "POST"])
 def upload_image():
     form = ImageUpload()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and 'photo' in request.files:
         filename = photos.save(form.photo.data)
-        file_url = photos.url(filename)
-        return render_template(url_for('predict', url=file_url))
-
-
+        file_url = photos.path(filename=filename)
+        return render_template('predict.html', url=file_url)
     return render_template("upload.html", form=form)
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
-    file_url = request.args.get("url")
-    print(file_url)
-    return render_template("predict.html", url=file_url)
+    url = request.args.get("url")
+    return render_template("predict.html", url=url)
 
 
 if __name__ == "__main__":
