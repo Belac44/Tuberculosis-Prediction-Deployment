@@ -67,10 +67,13 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
-    pass
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def get_data():
     form = PatientDetails()
     if form.validate_on_submit():
@@ -86,6 +89,7 @@ def get_data():
 
 
 @app.route("/image", methods=["GET", "POST"])
+@login_required
 def upload_image():
     form = ImageUpload()
     if form.validate_on_submit() and 'photo' in request.files:
@@ -96,6 +100,7 @@ def upload_image():
 
 
 @app.route("/predict", methods=["GET", "POST"])
+@login_required
 def predict():
     url = request.args.get("url")
     return render_template("predict.html", url=url)
