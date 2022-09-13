@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 from forms import PatientDetails, ImageUpload, HospitalRegister, LogIn
 from flask_bootstrap import Bootstrap
+from model_build import ModelBuild
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -9,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 import os
 
 photos = UploadSet("photos", IMAGES)
-# model = pickle.load(open('model.pkl', 'rb'))
+
 
 
 app = Flask(__name__)
@@ -134,11 +135,11 @@ def upload_image():
 @login_required
 def predict():
     url = request.args.get("url")
-    return render_template("predict.html", url=url)
+    model = ModelBuild()
+    features = model.process_image(url)
+    prediction = model.predict(features)
+    return render_template("predict.html", prediction=prediction[0], url=url)
 
-def process_image(img):
-    img = io.imread(img)
-    imgGray = color.rgb2gray(img)
 
 
 
