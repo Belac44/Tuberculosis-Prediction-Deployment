@@ -23,17 +23,32 @@ Bootstrap(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 class User(UserMixin, db.Model):
+    __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     hospital = db.Column(db.String(500), unique=True, nullable=False)
     code = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
 
+class Patient(db.Model):
+    __tablename__ = "patient"
+
+    id = db.column(db.Integer, primary_key=True)
+    name = db.Column(db.String(250), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    gender = db.Column(db.Integer, nullable=False)
+    image_id = db.Column(db.Integer, nullable=False)
+    hospital = db.Column(db.String(500), nullable=False)
+
 
 db.create_all()
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = HospitalRegister()
@@ -51,6 +66,7 @@ def register():
         login_user(new_user)
         return redirect(url_for('get_data'))
     return render_template("register.html", form=form)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -72,6 +88,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def get_data():
@@ -82,7 +99,18 @@ def get_data():
         gender = form.gender.data
         image_id = form.image_id.data
         hospital = form.hospital.data
-
+        new_patient = Patient(
+            name=name,
+            age=age,
+            gender=gender,
+            image_id=image_id,
+            hospital=hospital
+        )
+        db.session.add(new_patient)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            pass
         return redirect(url_for('upload_image'))
 
     return render_template("index.html", form=form)
