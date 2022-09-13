@@ -39,7 +39,7 @@ class User(UserMixin, db.Model):
 class Patient(db.Model):
     __tablename__ = "patient"
 
-    id = db.column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.Integer, nullable=False)
@@ -48,6 +48,9 @@ class Patient(db.Model):
 
 
 db.create_all()
+@app.route("/")
+def home():
+    return render_template('home.html')
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -86,10 +89,10 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/patient", methods=["GET", "POST"])
 @login_required
 def get_data():
     form = PatientDetails()
