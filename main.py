@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 from forms import PatientDetails, ImageUpload, HospitalRegister, LogIn
 from flask_bootstrap import Bootstrap
-from model_build import ModelBuild
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
+from model_build import ModelBuild
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.exc import IntegrityError
 import os
@@ -94,7 +94,7 @@ def logout():
 
 
 @app.route("/patient", methods=["GET", "POST"])
-@login_required
+# @login_required
 def get_data():
     form = PatientDetails()
     if form.validate_on_submit():
@@ -121,25 +121,25 @@ def get_data():
 
 
 @app.route("/image", methods=["GET", "POST"])
-@login_required
+# @login_required
 def upload_image():
     form = ImageUpload()
     if form.validate_on_submit() and 'photo' in request.files:
         filename = photos.save(form.photo.data)
         file_url = photos.path(filename=filename)
-        return render_template('predict.html', url=file_url)
+        return redirect(url_for('predict', url=file_url))
     return render_template("upload.html", form=form)
 
 
 @app.route("/predict", methods=["GET", "POST"])
-@login_required
+# @login_required
 def predict():
     url = request.args.get("url")
     model = ModelBuild()
     features = model.process_image(url)
     prediction = model.predict(features)
+    print(prediction[0])
     return render_template("predict.html", prediction=prediction[0], url=url)
-
 
 
 
