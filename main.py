@@ -11,12 +11,12 @@ import os
 
 photos = UploadSet("photos", IMAGES)
 
-
-
 app = Flask(__name__)
+
 app.config["UPLOADED_PHOTOS_DEST"] = "static/img"
 app.config["SECRET_KEY"] = os.urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tb-hospital-data.db'
+
 db = SQLAlchemy(app)
 configure_uploads(app, photos)
 Bootstrap(app)
@@ -49,6 +49,7 @@ class Patient(db.Model):
 
 
 db.create_all()
+
 @app.route("/")
 def home():
     return render_template('home.html')
@@ -94,7 +95,7 @@ def logout():
 
 
 @app.route("/patient", methods=["GET", "POST"])
-# @login_required
+@login_required
 def get_data():
     form = PatientDetails()
     if form.validate_on_submit():
@@ -121,7 +122,7 @@ def get_data():
 
 
 @app.route("/image", methods=["GET", "POST"])
-# @login_required
+@login_required
 def upload_image():
     form = ImageUpload()
     if form.validate_on_submit() and 'photo' in request.files:
@@ -132,7 +133,7 @@ def upload_image():
 
 
 @app.route("/predict", methods=["GET", "POST"])
-# @login_required
+@login_required
 def predict():
     url = request.args.get("url")
     model = ModelBuild()

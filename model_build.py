@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 from PIL import Image
-import matplotlib.pyplot as plt
+from skimage.color import rgb2gray
 
 class ModelBuild:
     def __init__(self):
@@ -10,12 +10,9 @@ class ModelBuild:
     def process_image(self, image):
         img = Image.open(image)
         img = img.resize((150, 150))
-        sRGB_array = np.asarray(img) / 255
-        if sRGB_array.shape[-1] == 4:
-            grey_vals = np.array([0.2126, 0.7152, 0.0722, 0])
-        elif sRGB_array.shape[-1] == 3:
-            grey_vals = np.array([0.2126, 0.7152, 0.0722])
-        img_gray = sRGB_array @ grey_vals
+        sRGB_array = np.asarray(img)
+        img_gray = rgb2gray(sRGB_array)
+        img_gray = img_gray/255
         return img_gray.ravel().reshape(1, 22500)
 
 
