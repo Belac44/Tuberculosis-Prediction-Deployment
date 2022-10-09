@@ -3,7 +3,8 @@
     <div class="container">
         <h2>Please add Patient's details</h2>
         <form method="post" action="{{url_for('get_data')}}">
-            {{wtf.quick_form(form, novalidate=True, button_map={"submit":"primary"})}}
+            {{ form.csrf_token }}
+            {{ wtf.quick_form(form) }}
         </form>
     </div>
 

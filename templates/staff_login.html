@@ -10,6 +10,16 @@
 
 <form action="{{url_for('staff_login')}}" method="post" class="staff-login-form">
 
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes >
+      {% for message in messages %}
+      <li style="color:red">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
+
   {{ wtf.quick_form(form, button_map={'submit':'primary'}) }}
 
 </form>

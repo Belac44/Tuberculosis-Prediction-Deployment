@@ -7,6 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 from model_build import ModelBuild
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.exc import IntegrityError
+import smtplib
+import random
 import os
 
 photos = UploadSet("photos", IMAGES)
@@ -89,6 +91,7 @@ def register():
 def staff_register():
     form = StaffRegister()
     if form.validate_on_submit():
+        send_email(form.emailH.data)
         if form.fpassword.data == form.lpassword.data:
             new_staff = Staff(
                 fname=form.fname.data,
@@ -128,7 +131,7 @@ def staff_login():
     form = StaffLogin()
     if form.validate_on_submit():
         email = form.email.data
-        found_staff = Staff.query.filter_by(email=email).first()
+        found_staff = Staff.query.filter_by(emailP=email).first()
         if found_staff and check_password_hash(found_staff.password, form.password.data):
             login_user(user_available)
             return redirect(url_for('get_data'))
@@ -146,7 +149,6 @@ def logout():
 
 
 @app.route("/patient", methods=["GET", "POST"])
-@login_required
 def get_data():
     form = PatientDetails()
     if form.validate_on_submit():
@@ -173,7 +175,6 @@ def get_data():
 
 
 @app.route("/image", methods=["GET", "POST"])
-@login_required
 def upload_image():
     form = ImageUpload()
     if form.validate_on_submit() and 'photo' in request.files:
@@ -184,7 +185,6 @@ def upload_image():
 
 
 @app.route("/predict", methods=["GET", "POST"])
-@login_required
 def predict():
     url = request.args.get("url")
     model = ModelBuild()
@@ -192,6 +192,20 @@ def predict():
     prediction = model.predict(features)
     print(prediction[0])
     return render_template("predict.html", prediction=prediction[0], url=url)
+
+def send_email(send_to):
+    connection = smtplib.SMTP("smtp.gmail.com")
+    connection.starttls()
+    conncetion.login(user=os.environ['Email'], password=os.environ["Password"])
+    num = random.randint(100000, 999999)
+    connection.sendmail(from_addr=os.environ["Email"], to=send_to, message=f"Subject:Verification code\n\n {num} is your TB "
+                                                                      "Web Verification Code")
+    conncetion.close()
+
+def verification(user_entry):
+    if user_entry == send_email():
+        return True
+    return False
 
 
 
