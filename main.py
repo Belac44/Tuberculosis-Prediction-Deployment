@@ -44,8 +44,21 @@ class Patient(db.Model):
     name = db.Column(db.String(250), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.Integer, nullable=False)
-    image_id = db.Column(db.Integer, nullable=False)
+    image_id = db.Column(db.String(250), nullable=False)
     hospital = db.Column(db.String(500), nullable=False)
+
+class Staff(db.Model):
+
+    __tablename__ = 'staff'
+
+    id = db.Column(db.Integer, primary_key=True)
+    fname = db.Column(db.String(250), nullable=False)
+    lname = db.Column(db.String(250), nullable=False)
+    emailH = db.Column(db.String(250), nullable=False)
+    emailP = db.Column(db.String(250), nullable=False)
+    organization = db.Column(db.String(250), nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+
 
 
 db.create_all()
@@ -73,9 +86,27 @@ def register():
     return render_template("register.html", form=form)
 
 @app.route("/staff-register")
-def register_staff():
+def staff_register():
     form = StaffRegister()
-
+    if form.validate_on_submit():
+        if form.fpassword.data == form.lpassword.data:
+            new_staff = Staff(
+                fname=form.fname.data,
+                lname=form.lname.data,
+                emailP=form.emailP.data,
+                emailH=form.emailH.data,
+                password=generate_password_hash(form.fpassword.data, str='pbkdf2:sha256', salt_length=8),
+                organization=form.organization.data
+            )
+            db.session.add(new_staff)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                pass
+            login_user(new_staff)
+            return redirect('get_data')
+        else:
+            flash("Passwords do no match")
     return render_template('staff_register.html', form=form)
 
 @app.route("/login", methods=["GET", "POST"])
@@ -95,7 +126,17 @@ def login():
 @app.route("/staff-login", methods=["GET", "POST"])
 def staff_login():
     form = StaffLogin()
-    return render_template('staff_login', form=form)
+    if form.validate_on_submit():
+        email = form.email.data
+        found_staff = Staff.query.filter_by(email=email).first()
+        if found_staff and check_password_hash(found_staff.password, form.password.data):
+            login_user(user_available)
+            return redirect(url_for('get_data'))
+        else:
+            flash("Invalid Credentials")
+            return redirect(url_for('staff_login'))
+
+    return render_template('staff_login.html', form=form)
 
 @app.route("/logout")
 @login_required
