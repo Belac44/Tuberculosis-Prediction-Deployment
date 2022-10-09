@@ -1,7 +1,7 @@
 {% include "header.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
     <div class="container">
-        <h2>Please add your details</h2>
+        <h2>Please add Patient's details</h2>
         <form method="post" action="{{url_for('get_data')}}">
             {{wtf.quick_form(form, novalidate=True, button_map={"submit":"primary"})}}
         </form>

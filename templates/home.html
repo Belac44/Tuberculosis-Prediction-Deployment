@@ -1,12 +1,101 @@
 {% include "header.html" %}
 
-<div class="jumbotron">
-  <h1 class="display-4">TuberCulosis Stage III Detection Software</h1>
-  <p class="lead">A Machine learning model to help doctors easily detect TuberCulosis</p>
+<style>
+.jumbotron-content{
+    background-color:#6F38C5;
+<!--    background-image:{{url_for('static', filename='/img/background.jpg')}};-->
+}
+.jumbotron{
+width:60%;
+margin:0 auto;
+padding:3.5em 0;
+}
+ .lead, .btn{
+  color:#ADDDD0;
+}
+.display-4{
+font-weight:900;
+font-size: 15vmin;
+text-align: center;
+color:white;
+
+}
+.lead{
+font-weight:400;
+text-align:center;
+}
+.sign-buttons{
+width:50%;
+margin:0 auto;
+}
+.get-started{
+text-align:center;
+margin:0 auto;
+}
+.card-descr{
+width:50;
+}
+.card{
+width:25%;
+}
+.card-img-top{
+height:35vmin;
+}
+
+.card-descr p{
+  text-align:center;
+  font-weight:500;
+  font-size:5vmin;
+  color:#47B5FF;
+}
+.card-contents{
+width:80%;
+margin: 0 auto;
+display:flex;
+justify-content:space-between;
+max-width:1200px;
+}
+
+</style>
+
+<div class="jumbotron-content">
+  <div class="jumbotron">
+    <h1 class="display-4">TuberCulosis Stage III Detection Software</h1>
+    <p class="lead">A Machine learning model to help doctors easily detect TuberCulosis</p>
+  </div>
   <hr class="my-4">
-  <p>Designed in Dkut by Lilian</p>
-  <a class="btn btn-primary btn-lg" href="{{url_for('login')}}" role="button">Sign In</a>
-    <a class="btn btn-primary btn-lg" href="{{url_for('register')}}" role="button"> Register</a>
+</div>
+<div class="card-descr">
+  <p>Predict an Image in simple steps</p>
+</div>
+<div class="card-contents">
+
+  <div class="card" >
+    <img class="card-img-top" src="{{url_for('static', filename='img/upload_image.jpg')}}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Upload images</h5>
+      <p class="card-text">Upload a png or jpg x-ray file. The image should be a chest image as any other file will always predict null</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img class="card-img-top" src="{{url_for('static', filename='img/classify_image.jpg')}}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Classify images</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img class="card-img-top" src="{{url_for('static', filename='img/predict.jpg')}}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Make Prediction</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+  </div>
+</div>
+<div class="sign-buttons">
+  <a class="btn btn-primary btn-lg get-started" href="{{url_for('upload_image')}}"  style="color:#EEEEEE;" role="button">Get Started</a>
 </div>
 
 {% include "footer.html" %}

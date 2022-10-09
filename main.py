@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_uploads import IMAGES, UploadSet, configure_uploads
-from forms import PatientDetails, ImageUpload, HospitalRegister, LogIn
+from forms import PatientDetails, ImageUpload, HospitalRegister, LogIn, StaffRegister, StaffLogin
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
@@ -72,6 +72,11 @@ def register():
         return redirect(url_for('get_data'))
     return render_template("register.html", form=form)
 
+@app.route("/staff-register")
+def register_staff():
+    form = StaffRegister()
+
+    return render_template('staff_register.html', form=form)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -86,6 +91,11 @@ def login():
             return redirect(url_for('login'))
     return render_template("login.html", form=form)
 
+
+@app.route("/staff-login", methods=["GET", "POST"])
+def staff_login():
+    form = StaffLogin()
+    return render_template('staff_login', form=form)
 
 @app.route("/logout")
 @login_required
