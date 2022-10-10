@@ -31,6 +31,7 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 class User(UserMixin, db.Model):
     __tablename__ = "users"
 
@@ -38,6 +39,7 @@ class User(UserMixin, db.Model):
     hospital = db.Column(db.String(500), unique=True, nullable=False)
     code = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
+
 
 class Patient(db.Model):
     __tablename__ = "patient"
@@ -49,8 +51,8 @@ class Patient(db.Model):
     image_id = db.Column(db.String(250), nullable=False)
     hospital = db.Column(db.String(500), nullable=False)
 
-class Staff(db.Model):
 
+class Staff(db.Model):
     __tablename__ = 'staff'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -65,9 +67,11 @@ class Staff(db.Model):
 
 db.create_all()
 
+
 @app.route("/")
 def home():
     return render_template('home.html')
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -86,6 +90,7 @@ def register():
         login_user(new_user)
         return redirect(url_for('get_data'))
     return render_template("register.html", form=form)
+
 
 @app.route("/staff-register")
 def staff_register():
@@ -111,6 +116,7 @@ def staff_register():
         else:
             flash("Passwords do no match")
     return render_template('staff_register.html', form=form)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -140,6 +146,7 @@ def staff_login():
             return redirect(url_for('staff_login'))
 
     return render_template('staff_login.html', form=form)
+
 
 @app.route("/logout")
 @login_required
@@ -193,14 +200,17 @@ def predict():
     print(prediction[0])
     return render_template("predict.html", prediction=prediction[0], url=url)
 
+
 def send_email(send_to):
     connection = smtplib.SMTP("smtp.gmail.com")
     connection.starttls()
     conncetion.login(user=os.environ['Email'], password=os.environ["Password"])
     num = random.randint(100000, 999999)
-    connection.sendmail(from_addr=os.environ["Email"], to=send_to, message=f"Subject:Verification code\n\n {num} is your TB "
-                                                                      "Web Verification Code")
+    connection.sendmail(from_addr=os.environ["Email"], to=send_to, message=f"Subject:Verification code\n\n {num}"
+                                                                           f" is your TB Web Verification Code\nCode "
+                                                                           f"expires in 60 seconds")
     conncetion.close()
+
 
 def verification(user_entry):
     if user_entry == send_email():

@@ -8,7 +8,7 @@
 .jumbotron{
 width:60%;
 margin:0 auto;
-padding:3.5em 0;
+padding:3em 0;
 }
  .lead, .btn{
   color:#ADDDD0;
@@ -35,25 +35,38 @@ margin:0 auto;
 .card-descr{
 width:50;
 }
-.card{
-width:25%;
-}
+
 .card-img-top{
 height:35vmin;
 }
-
+.card-contents{
+width:80%;
+margin:0 auto;
+}
+.card{
+width:80%;
+margin:0 auto;
+margin:2em;
+}
 .card-descr p{
   text-align:center;
-  font-weight:500;
-  font-size:5vmin;
+  font-weight:400;
+  font-size:4vmin;
   color:#47B5FF;
 }
-.card-contents{
+
+@media (min-width:600px){
+  .card-contents{
 width:80%;
 margin: 0 auto;
 display:flex;
 justify-content:space-between;
 max-width:1200px;
+}
+.card{
+width:25%;
+min-width:250px;
+}
 }
 
 </style>
@@ -66,7 +79,7 @@ max-width:1200px;
   <hr class="my-4">
 </div>
 <div class="card-descr">
-  <p>Predict an Image in simple steps</p>
+  <p>Makes classification in three steps</p>
 </div>
 <div class="card-contents">
 

@@ -1,7 +1,18 @@
 {% include "header.html" %}
-{% import "bootstrap\wtf.html" as wtf %}
-<form action="{{url_for('register_staff')}}" method="post">
-    {{ wtf.quick_form(form) }}
-</form>
+{% import "bootstrap/wtf.html" as wtf %}
+
+<style>
+    .staff-register-form{
+    width:80%;
+    margin:0 auto;
+    }
+</style>
+
+<div class="staff-register-form">
+    <form action="{{url_for('staff_register')}}" method="post">
+        {{ wtf.quick_form(form, button_map={'submit':'primary'}) }}
+    </form>
+</div>
+
 
 {% include "footer.html" %}
