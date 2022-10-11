@@ -1,20 +1,22 @@
-import pickle
 import numpy as np
-from PIL import Image
-from skimage.color import rgb2gray
+import joblib
+import cv2
 
 class ModelBuild:
     def __init__(self):
-        self.model = pickle.load(open('model.pkl', 'rb'))
+        self.model = joblib.load("model_main.pkl")
 
-    def process_image(self, image):
-        img = Image.open(image)
-        img = img.resize((150, 150))
-        sRGB_array = np.asarray(img)
-        img_gray = rgb2gray(sRGB_array)
-        img_gray = img_gray/255
-        return img_gray.ravel().reshape(1, 22500)
+    def preprocess_image2(image):
+        img = cv2.imread(str(image))
+        img = cv2.resize(img, (28, 28))
+        if img.shape[2] == 1:
+            img = np.dstack([img, img, img])
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = np.array(img)
+        img = img / 255
+        return img.reshape(-1, 28, 28, 3)
 
 
     def predict(self, features):
-        return self.model.predict(features)
+        pred = self.model(features)
+        return (float(pred[0][0]), float(pred[0][1]))

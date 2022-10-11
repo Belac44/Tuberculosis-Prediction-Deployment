@@ -2,7 +2,6 @@
 {% import "bootstrap/wtf.html" as wtf %}
 <form class="container" method=POST enctype=multipart/form-data action="{{url_for('upload_image')}}">
   {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}
-  <input type="file" name=file multiple>
 </form>
 
 {% include "footer.html" %}

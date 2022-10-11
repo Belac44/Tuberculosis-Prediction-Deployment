@@ -197,8 +197,13 @@ def predict():
     model = ModelBuild()
     features = model.process_image(url)
     prediction = model.predict(features)
-    print(prediction[0])
-    return render_template("predict.html", prediction=prediction[0], url=url)
+    if prediction[0] > prediction[1]:
+        result = 0
+    elif prediction[0] < prediction[1]:
+        result = 1
+    else:
+        result = None
+    return render_template("predict.html", prediction=result, url=url)
 
 
 def send_email(send_to):
