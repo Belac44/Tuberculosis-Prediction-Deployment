@@ -1,9 +1,6 @@
 import numpy as np
-import joblib
-import pickle
 import cv2
 from keras.models import model_from_json
-
 
 
 class ModelBuild:
@@ -33,8 +30,3 @@ class ModelBuild:
     def predict(self, features):
         pred = self.model(features)
         return float(pred[0][0]), float(pred[0][1])
-
-
-# model = ModelBuild()
-# features = model.preprocess_image2("/static/img/Tuberculosis-31.png")
-# print(model(features))

@@ -1,4 +1,13 @@
 {% include "header.html" %}
+
+<style>
+    .predicted-image{
+    width:50%
+    margin:0 auto;
+    max-width:450px;
+    }
+</style>
+
 <div class = "image-container" >
     {% if prediction == 0: %}
         <p>Patient Negative of Tuberculosis</p>
@@ -8,7 +17,10 @@
         <p>Undecided!!!</p>
     {% endif %}
 
-    <img src="{{ url }}">
+    <div class="predicted-image">
+        <img src="{{ url }}">
+    </div>
+
 </div>
 
 
