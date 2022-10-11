@@ -66,7 +66,7 @@ class Staff(db.Model):
 
 
 db.create_all()
-
+global file_url
 
 @app.route("/")
 def home():
@@ -183,17 +183,18 @@ def get_data():
 
 @app.route("/image", methods=["GET", "POST"])
 def upload_image():
+    global file_url
     form = ImageUpload()
     if form.validate_on_submit() and 'photo' in request.files:
         filename = photos.save(form.photo.data)
         file_url = photos.path(filename=filename)
-        return redirect(url_for('predict', url=file_url))
+        return redirect(url_for('predict'))
     return render_template("upload.html", form=form)
 
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
-    url_passed = request.args.get("url")
+    url_passed = file_url
     model = ModelBuild()
     features = model.preprocess_image2(url_passed)
     prediction = model.predict(features)
@@ -203,7 +204,7 @@ def predict():
         result = 1
     else:
         result = None
-    return render_template("predict.html", prediction=result, url=url)
+    return render_template("predict.html", prediction=result, url=url_passed)
 
 
 def send_email(send_to):

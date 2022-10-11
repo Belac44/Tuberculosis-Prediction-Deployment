@@ -1,12 +1,24 @@
 import numpy as np
 import joblib
+import pickle
 import cv2
+from keras.models import model_from_json
+
 
 
 class ModelBuild:
     def __init__(self):
-        self.model = joblib.load("model_main.pkl")
         self.img = None
+        self.model = self.make_model()
+
+    def make_model(self):
+        file = open("finalmodel.json", 'r')
+        loaded_model_json = file.read()
+        file.close()
+        model = model_from_json(loaded_model_json)
+        model.load_weights("finalmodel.h5")
+        return model
+
 
     def preprocess_image2(self, image):
         self.img = cv2.imread(str(image))
@@ -21,3 +33,8 @@ class ModelBuild:
     def predict(self, features):
         pred = self.model(features)
         return float(pred[0][0]), float(pred[0][1])
+
+
+# model = ModelBuild()
+# features = model.preprocess_image2("/static/img/Tuberculosis-31.png")
+# print(model(features))
