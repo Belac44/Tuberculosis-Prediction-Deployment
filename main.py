@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 from forms import PatientDetails, ImageUpload, HospitalRegister, LogIn, StaffRegister, StaffLogin
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from model_build import ModelBuild
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -27,13 +27,14 @@ Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True)
     hospital = db.Column(db.String(500), unique=True, nullable=False)
@@ -64,7 +65,6 @@ class Staff(db.Model):
     password = db.Column(db.String(250), nullable=False)
 
 
-
 db.create_all()
 
 
@@ -88,7 +88,7 @@ def register():
         except IntegrityError:
             pass
         login_user(new_user)
-        return redirect(url_for('get_data'))
+        return redirect(url_for('upload_image'))
     return render_template("register.html", form=form)
 
 
@@ -103,7 +103,7 @@ def staff_register():
                 lname=form.lname.data,
                 emailP=form.emailP.data,
                 emailH=form.emailH.data,
-                password=generate_password_hash(form.fpassword.data, str='pbkdf2:sha256', salt_length=8),
+                password=generate_password_hash(form.fpassword.data, method='pbkdf2:sha256', salt_length=8),
                 organization=form.organization.data
             )
             db.session.add(new_staff)
@@ -112,7 +112,7 @@ def staff_register():
             except IntegrityError:
                 pass
             login_user(new_staff)
-            return redirect('get_data')
+            return redirect(url_for('upload_image'))
         else:
             flash("Passwords do no match")
     return render_template('staff_register.html', form=form)
@@ -140,7 +140,7 @@ def staff_login():
         found_staff = Staff.query.filter_by(emailP=email).first()
         if found_staff and check_password_hash(found_staff.password, form.password.data):
             login_user(user_available)
-            return redirect(url_for('get_data'))
+            return redirect(url_for('upload_image'))
         else:
             flash("Invalid Credentials")
             return redirect(url_for('staff_login'))
@@ -193,9 +193,9 @@ def upload_image():
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
-    url = request.args.get("url")
+    url_passed = request.args.get("url")
     model = ModelBuild()
-    features = model.process_image(url)
+    features = model.preprocess_image2(url_passed)
     prediction = model.predict(features)
     if prediction[0] > prediction[1]:
         result = 0
@@ -211,18 +211,17 @@ def send_email(send_to):
     connection.starttls()
     conncetion.login(user=os.environ['Email'], password=os.environ["Password"])
     num = random.randint(100000, 999999)
-    connection.sendmail(from_addr=os.environ["Email"], to=send_to, message=f"Subject:Verification code\n\n {num}"
-                                                                           f" is your TB Web Verification Code\nCode "
-                                                                           f"expires in 60 seconds")
+    connection.sendmail(
+        from_addr=os.environ["Email"],
+        to_addrs=send_to,
+        msg=f"Subject:Verification code\n\n {num} is your TB Web Verification Code\nCode expires in 60 seconds")
     conncetion.close()
 
 
-def verification(user_entry):
-    if user_entry == send_email():
-        return True
-    return False
-
-
+# def verification(user_entry):
+#     if user_entry == send_email():
+#         return True
+#     return False
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
