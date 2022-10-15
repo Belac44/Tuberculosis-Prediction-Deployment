@@ -152,7 +152,8 @@ def staff_login():
 @app.route("/staff-dashboard", methods=["GET", "POST"])
 def staff_dashboard():
     patient_data = Patient.query.all()
-    return render_template("staff-dashboard.html", data=patient_data)
+    form = StaffRegister()
+    return render_template("staff-dashboard.html", data=patient_data, form=form)
 
 @app.route("/logout")
 @login_required
