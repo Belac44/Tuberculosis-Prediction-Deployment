@@ -4,7 +4,7 @@ from forms import PatientDetails, ImageUpload, HospitalRegister, LogIn, StaffReg
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
-from model_build import ModelBuild
+# from model_build import ModelBuild
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.exc import IntegrityError
 import smtplib
@@ -49,7 +49,7 @@ class Patient(db.Model):
     name = db.Column(db.String(250), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.Integer, nullable=False)
-    image_id = db.Column(db.String(250), nullable=False)
+    image_id = db.Column(db.String(250), nullable=False, unique=True)
     hospital = db.Column(db.String(500), nullable=False)
 
 
@@ -67,6 +67,7 @@ class Staff(db.Model):
 
 db.create_all()
 global file_url
+
 
 @app.route("/")
 def home():
@@ -88,7 +89,7 @@ def register():
         except IntegrityError:
             pass
         login_user(new_user)
-        return redirect(url_for('upload_image'))
+        return redirect(url_for('get_data'))
     return render_template("register.html", form=form)
 
 
@@ -112,7 +113,7 @@ def staff_register():
             except IntegrityError:
                 pass
             login_user(new_staff)
-            return redirect(url_for('upload_image'))
+            return redirect(url_for('get_data'))
         else:
             flash("Passwords do no match")
     return render_template('staff_register.html', form=form)
@@ -140,13 +141,18 @@ def staff_login():
         found_staff = Staff.query.filter_by(emailP=email).first()
         if found_staff and check_password_hash(found_staff.password, form.password.data):
             login_user(user_available)
-            return redirect(url_for('upload_image'))
+            return redirect(url_for('get_data'))
         else:
             flash("Invalid Credentials")
             return redirect(url_for('staff_login'))
 
     return render_template('staff_login.html', form=form)
 
+
+@app.route("/staff-dashboard", methods=["GET", "POST"])
+def staff_dashboard():
+    patient_data = Patient.query.all()
+    return render_template("staff-dashboard.html", data=patient_data)
 
 @app.route("/logout")
 @login_required
@@ -176,25 +182,26 @@ def get_data():
             db.session.commit()
         except IntegrityError:
             pass
-        return redirect(url_for('upload_image'))
+        return redirect(url_for('upload_image', ids=image_id))
 
     return render_template("index.html", form=form)
 
 
 @app.route("/image", methods=["GET", "POST"])
 def upload_image():
-    global file_url
+    image_id = request.args.get('ids')
+    print(image_id)
     form = ImageUpload()
     if form.validate_on_submit() and 'photo' in request.files:
-        filename = photos.save(form.photo.data)
-        file_url = photos.path(filename=filename)
-        return redirect(url_for('predict'))
+        photos.save(form.photo.data)
+        file_url = photos.path(filename=image_id)
+        return redirect(url_for('predict', url=file_url))
     return render_template("upload.html", form=form)
 
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
-    url_passed = file_url
+    url_passed = request.args.get("url")
     model = ModelBuild()
     features = model.preprocess_image2(url_passed)
     prediction = model.predict(features)

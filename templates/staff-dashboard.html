@@ -1,0 +1,73 @@
+{% include "header.html" %}
+<style>
+    .staff-container{
+    width:90%;
+    margin:0 auto;
+    margin-top:2em;
+    }
+    .controls{
+    display:flex;
+    justify-content:space-between;
+    border:1px solid black;
+    }
+    .data{
+    border:1px solid black;
+    }
+
+
+    @media (min-width:800px){
+    .content{
+    display:flex;
+    }
+    .controls{
+    display:flex;
+    flex-direction:column;
+    width:15%;
+    border:1px solid black;
+    padding:2em;
+    }
+    .data{
+    width:85%;
+    border:1px solid black;
+    }
+    }
+</style>
+
+<div class="staff-container">
+    <div class="content">
+        <div class="controls">
+            <p><i class="fa-sharp fa-solid fa-bed-pulse"></i> Patients</p>
+            <p><i class="fa-solid fa-x-ray"></i> Images</p>
+            <p><i class="fa-sharp fa-solid fa-cash-register"></i> Register Staff</p>
+            <p><i class="fa-sharp fa-solid fa-people-group"></i> Registered Staff</p>
+        </div>
+        <div class="data">
+            <table class="table table-success table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Age</th>
+                      <th scope="col">Gender</th>
+                       <th scope="col">Image</th>
+                       <th scope="col">Hospital</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for patient in data: %}
+                        <tr>
+                          <th scope="row">{{patient.id}}</th>
+                          <td>{{patient.name}}</td>
+                          <td>{{patient.age}}</td>
+                          <td>{{patient.gender}}</td>
+                          <td>{{patient.image_id}}</td>
+                           <td>{{patient.hospital}}</td>
+                        </tr>
+                  {% endfor %}
+                  </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% include "footer.html" %}

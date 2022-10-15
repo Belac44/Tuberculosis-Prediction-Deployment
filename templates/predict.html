@@ -6,27 +6,43 @@
     margin:0 auto;
     margin-top:2em;
     }
+
     .image-container p{
     text-align:center;
     }
+
     .predicted-image{
     width:60%
     margin:0 auto;
-    max-width:450px;
+    max-width:350px;
     }
+    img{
+    width:100%;
+    }
+    .again-button{
+    width:50%;
+    margin:0 auto;
+    }
+
 </style>
 
 <div class = "image-container" >
     {% if prediction == 0: %}
         <p>Patient Negative of Tuberculosis</p>
     {% elif prediction == 1: %}
-        <p>Patient Positive of Tuberculosis</p>
+        <p style="color:red">Patient Positive of Tuberculosis!!</p>
     {% else: %}
         <p>Undecided!!!</p>
     {% endif %}
 
     <div class="predicted-image">
         <img src="{{ url }}">
+    </div>
+    <div class="again-button">
+        <form method="get" action="{{url_for('upload_image')}}">
+            <button class="btn btn-lg btn-primary">Upload Another</button>
+        </form>
+
     </div>
 
 </div>
