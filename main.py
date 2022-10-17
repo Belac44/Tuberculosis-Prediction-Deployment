@@ -184,6 +184,7 @@ def get_data():
             hospital=hospital
         )
         db.session.add(new_patient)
+
         try:
             db.session.commit()
         except IntegrityError:
@@ -195,12 +196,10 @@ def get_data():
 
 @app.route("/image", methods=["GET", "POST"])
 def upload_image():
-    image_id = request.args.get('ids')
-    print(image_id)
     form = ImageUpload()
     if form.validate_on_submit() and 'photo' in request.files:
-        photos.save(form.photo.data)
-        file_url = photos.path(filename=image_id)
+        image_url = photos.save(form.photo.data)
+        file_url = photos.path(filename=image_url)
         return redirect(url_for('predict', url=file_url))
     return render_template("upload.html", form=form)
 
@@ -211,10 +210,11 @@ def predict():
     model = ModelBuild()
     features = model.preprocess_image2(url_passed)
     prediction = model.predict(features)
+    print(prediction)
     if prediction[0] > prediction[1]:
-        result = (0, prediction[0])
+        result = (0, prediction[0] + prediction[1])
     elif prediction[0] < prediction[1]:
-        result = (1, prediction[1])
+        result = (1, (1+(prediction[1] + prediction[0])))
     else:
         result = None
     return render_template("predict.html", prediction=result, url=url_passed)

@@ -6,13 +6,31 @@
   height:100%;
   font-size:max
   }
+  .upload-container{
+  width:80%;
+  margin:1em auto;
+  }
+  .upload-input{
+  width:80%;
+  margin:0 auto;
+  padding:12em;
+  border:2px dotted black;
+  }
+  .upload-button{
+  width:15%;
+  max-width:250px;
+  margin:1.5em auto;
+  display:block;
+  }
+
+
 </style>
 
-<form class="container" method=POST enctype=multipart/form-data action="{{url_for('upload_image')}}">
-<!--  {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}-->
+<form class="upload-container" method=POST enctype=multipart/form-data action="{{url_for('upload_image')}}">
+  {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}
 <!--  <label for="myFile">Upload Photo:</label>-->
-  <input type="file" name="photo" id="myFile">
-  <button type="submit">Upload Photo</button>
+<!--  <input class="upload-input" type="file" name="photo" id="myFile">-->
+<!--  <button class="upload-button btn btn-primary btn-lg" type="submit">Upload Photo</button>-->
 </form>
 
 {% include "footer.html" %}
