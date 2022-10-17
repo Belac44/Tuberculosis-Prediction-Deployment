@@ -28,9 +28,9 @@
 
 <div class = "image-container" >
     {% if prediction[0] == 0: %}
-        <p>Patient Negative of Tuberculosis. Probability of {{prediction[1]*-10}}</p>
+        <p>Patient Negative of Tuberculosis. Probability of {{prediction[1]*-100}}</p>
     {% elif prediction[0] == 1: %}
-        <p style="color:red">Patient Positive of Tuberculosis!!.    Probability of {{prediction[1]*10}}</p>
+        <p style="color:red">Patient Positive of Tuberculosis!!.    Probability of {{prediction[1]*100}}</p>
     {% else: %}
         <p>Undecided!!!</p>
     {% endif %}
