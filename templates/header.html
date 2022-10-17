@@ -19,6 +19,7 @@
     <script src="https://kit.fontawesome.com/b5627cdad6.js" crossorigin="anonymous"></script>
 
     <link href="{{url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
     <title>Tuberculosis Diagnosis Tool</title>
     <style>
@@ -74,7 +75,7 @@
           <a class="nav-link" href="{{url_for('staff_login')}}">Staff</a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="{{url_for('staff_dashboard')}}">Dashboard</a>
+          <a class="nav-link" href="{{url_for('staff_dashboard', id=0)}}">Dashboard</a>
       </li>
     </ul>
     </div>

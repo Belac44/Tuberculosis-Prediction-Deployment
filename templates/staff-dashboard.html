@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 <style>
     .staff-container{
-    width:90%;
+    width:95%;
     margin:0 auto;
     margin-top:2em;
     }
@@ -10,9 +10,16 @@
     display:flex;
     justify-content:space-between;
     border:1px solid black;
+    background-color:#1D1CE5;
+    color:white;
     }
-    .data{
+
+    #data{
     border:1px solid black;
+    }
+    #data p {
+    width:20%;
+    margin:0 auto;
     }
 
 
@@ -25,25 +32,42 @@
     flex-direction:column;
     width:15%;
     border:1px solid black;
-    padding:2em;
+    padding:2rem;
+    background-color:#1D1CE5;
+    color:white;
     }
-    .data{
+    #data{
     width:85%;
     border:1px solid black;
+    padding-top:1em;
+    background-color:#B8E8FC;
     }
+
+
     }
 </style>
 
 <div class="staff-container">
     <div class="content">
         <div class="controls">
-            <button onclick="patients()"><i class="fa-sharp fa-solid fa-bed-pulse"></i> Patients</button>
-            <button onclick="images()"><i class="fa-solid fa-x-ray"></i> Images</button>
-            <button onclick="register()"><i class="fa-sharp fa-solid fa-cash-register"></i> Register Staff</button>
-            <button onclick="registered_staff()"><i class="fa-sharp fa-solid fa-people-group"></i> Registered Staff</button>
+            <h2>ADMIN</h2>
+            <a href="{{url_for('staff_dashboard', id=0)}}"><i class="fa-sharp fa-solid fa-bed-pulse"></i> Patients</a>
+            <a href="{{url_for('staff_dashboard', id=3)}}"><i class="fa-solid fa-x-ray"></i> Images</a>
+            <a href="{{url_for('staff_dashboard', id=2)}}"><i class="fa-sharp fa-solid fa-cash-register"></i> Register Staff</a>
+            <a href="{{url_for('staff_dashboard', id=1)}}"><i class="fa-sharp fa-solid fa-people-group"></i> Registered Staff</a>
         </div>
         <div id="data">
-            {% include "patient-table.html" %}
+            {% if display == "0": %}
+                {% include "patient-table.html" %}
+            {% elif display == "1": %}
+                {% include "Registered_staff.html" %}
+            {% elif display == "2": %}
+                {% include "staff_register.html" %}
+            {% elif display == "3": %}
+                {% include "patient-table.html" %}
+            {% else: %}
+                {% include "patient-table.html" %}
+            {% endif %}
         </div>
     </div>
 </div>

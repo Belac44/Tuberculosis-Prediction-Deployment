@@ -1,7 +1,18 @@
 {% include "header.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+
+<style>
+  #myFile{
+  height:100%;
+  font-size:max
+  }
+</style>
+
 <form class="container" method=POST enctype=multipart/form-data action="{{url_for('upload_image')}}">
-  {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}
+<!--  {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}-->
+<!--  <label for="myFile">Upload Photo:</label>-->
+  <input type="file" name="photo" id="myFile">
+  <button type="submit">Upload Photo</button>
 </form>
 
 {% include "footer.html" %}

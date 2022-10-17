@@ -4,7 +4,7 @@ from forms import PatientDetails, ImageUpload, HospitalRegister, LogIn, StaffReg
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
-# from model_build import ModelBuild
+from model_build import ModelBuild
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.exc import IntegrityError
 import smtplib
@@ -153,13 +153,18 @@ def staff_login():
 def staff_dashboard():
     patient_data = Patient.query.all()
     form = StaffRegister()
-    return render_template("staff-dashboard.html", data=patient_data, form=form)
+    display = request.args.get('id')
+    return render_template("staff-dashboard.html", data=patient_data, form=form, display=display)
+
 
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+# @app.route("staff-dashboards")
+# def handle_click():
 
 
 @app.route("/patient", methods=["GET", "POST"])
@@ -207,9 +212,9 @@ def predict():
     features = model.preprocess_image2(url_passed)
     prediction = model.predict(features)
     if prediction[0] > prediction[1]:
-        result = 0
+        result = (0, prediction[0])
     elif prediction[0] < prediction[1]:
-        result = 1
+        result = (1, prediction[1])
     else:
         result = None
     return render_template("predict.html", prediction=result, url=url_passed)
