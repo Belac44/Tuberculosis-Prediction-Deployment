@@ -27,10 +27,10 @@
 </style>
 
 <form class="upload-container" method=POST enctype=multipart/form-data action="{{url_for('upload_image')}}">
-<!--  {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}-->
+  {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}
 <!--  <label for="myFile">Upload Photo:</label>-->
-  <input class="upload-input" type="file" name="photo" id="myFile">
-  <button class="upload-button btn btn-primary btn-lg" type="submit">Upload Photo</button>
+<!--  <input class="upload-input" type="file" name="photo" id="myFile">-->
+<!--  <button class="upload-button btn btn-primary btn-lg" type="submit">Upload Photo</button>-->
 </form>
 
 {% include "footer.html" %}

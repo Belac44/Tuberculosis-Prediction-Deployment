@@ -9,11 +9,11 @@ class ModelBuild:
         self.model = self.make_model()
 
     def make_model(self):
-        file = open("finalmodel.json", 'r')
+        file = open("model.json", 'r')
         loaded_model_json = file.read()
         file.close()
         model = model_from_json(loaded_model_json)
-        model.load_weights("finalmodel.h5")
+        model.load_weights("Model8.h5")
         return model
 
 
@@ -25,7 +25,8 @@ class ModelBuild:
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
         self.img = np.array(self.img)
         self.img = self.img / 255
-        return self.img.reshape(-1, 28, 28, 3)
+        return self.img
+        # return self.img.reshape(-1, 28, 28, 3)
 
     def predict(self, features):
         pred = self.model(features)
