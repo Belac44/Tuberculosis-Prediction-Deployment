@@ -47,6 +47,7 @@ class Patient(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
+    identification = db.Column(db.Integer, nullable=False, unique=True)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.Integer, nullable=False)
     image_id = db.Column(db.String(250), nullable=False, unique=True)
@@ -172,23 +173,30 @@ def get_data():
     form = PatientDetails()
     if form.validate_on_submit():
         name = form.name.data
+        identification = form.id.data
         age = form.age.data
         gender = form.gender.data
         image_id = form.image_id.data
         hospital = form.hospital.data
-        new_patient = Patient(
-            name=name,
-            age=age,
-            gender=gender,
-            image_id=image_id,
-            hospital=hospital
-        )
-        db.session.add(new_patient)
 
-        try:
-            db.session.commit()
-        except IntegrityError:
-            pass
+        user = Patient.query.filter_by(identification=form.id.data).first()
+        if user:
+            flash("User already exists.Details will be saved under his/her name")
+        else:
+            new_patient = Patient(
+                name=name,
+                identification=identification,
+                age=age,
+                gender=gender,
+                image_id=image_id,
+                hospital=hospital
+            )
+            db.session.add(new_patient)
+
+            try:
+                db.session.commit()
+            except IntegrityError:
+                pass
         return redirect(url_for('upload_image', ids=image_id))
 
     return render_template("index.html", form=form)

@@ -6,9 +6,10 @@ from flask_wtf.file import FileField, FileRequired
 
 class PatientDetails(FlaskForm):
     name = StringField("Patient's Name:", validators=[DataRequired()])
+    id = IntegerField("Patient's Unique Id:", validators=[DataRequired()])
     age = IntegerField("Patient's Age:", validators=[DataRequired()])
     gender = SelectField("Gender:", choices=[(0, "Male"), (1, "Female")], coerce=int, validators=[DataRequired()])
-    image_id = StringField("Image ID:", validators=[DataRequired()])
+    image_id = StringField("Unique Image ID:", validators=[DataRequired()])
     hospital = StringField("Hospital Name:", validators=[DataRequired()])
     submit = SubmitField("Next")
 

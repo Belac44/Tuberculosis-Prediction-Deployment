@@ -19,7 +19,7 @@ class ModelBuild:
 
     def preprocess_image2(self, image):
         self.img = cv2.imread(str(image))
-        self.img = cv2.resize(self.img, (28, 28))
+        self.img = cv2.resize(self.img, (224, 224, 3))
         if self.img.shape[2] == 1:
             self.img = np.dstack([self.img, self.img, self.img])
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)

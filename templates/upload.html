@@ -22,15 +22,32 @@
   margin:1.5em auto;
   display:block;
   }
+  .add-patient{
+  width:50%;
+  margin:0 auto;
+  }
 
 
 </style>
 
 <form class="upload-container" method=POST enctype=multipart/form-data action="{{url_for('upload_image')}}">
+          {% with messages = get_flashed_messages() %}
+           {% if messages %}
+              {% for message in messages %}
+                 <p style="color:green">{{ message }}</p>
+              {% endfor %}
+           {% endif %}
+        {% endwith %}
   {{ wtf.quick_form(form, button_map={'upload': 'primary'}) }}
 <!--  <label for="myFile">Upload Photo:</label>-->
 <!--  <input class="upload-input" type="file" name="photo" id="myFile">-->
 <!--  <button class="upload-button btn btn-primary btn-lg" type="submit">Upload Photo</button>-->
 </form>
+<div class="add-patient">
+    <form method="get" action="{{url_for('get_data')}}">
+        <button type="submit" class="btn btn-primary"> + New Patient</button>
+    </form>
+
+</div>
 
 {% include "footer.html" %}
