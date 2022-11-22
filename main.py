@@ -218,6 +218,7 @@ def predict():
     model = ModelBuild()
     features = model.preprocess_image2(url_passed)
     prediction = model.predict(features)
+    print(prediction)
     if prediction[0] > prediction[1]:
         result = (0, prediction[0] + prediction[1])
     elif prediction[0] < prediction[1]:
