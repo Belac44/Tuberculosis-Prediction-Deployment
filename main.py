@@ -218,11 +218,11 @@ def predict():
     model = ModelBuild()
     features = model.preprocess_image2(url_passed)
     prediction = model.predict(features)
-    print(prediction)
+
     if prediction[0] > prediction[1]:
-        result = (0, prediction[0] + prediction[1])
+        result = (0, prediction[0])
     elif prediction[0] < prediction[1]:
-        result = (1, (1+(prediction[1] + prediction[0])))
+        result = (1, prediction[1])
     else:
         result = None
     return render_template("predict.html", prediction=result, url=url_passed)
